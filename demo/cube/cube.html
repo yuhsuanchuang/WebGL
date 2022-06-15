@@ -1,0 +1,87 @@
+<html>
+    <link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
+	<script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+	<script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+
+	<style>
+        canvas {
+            background-color:floralwhite;
+        }
+		.container {
+			width: 400px;
+			padding: 20px;
+			display: flex;
+			flex-direction: column;
+		}
+		.ui-input-text{
+			width: 100px;
+		}
+    </style>
+	<script id="vertex-shader" type="x-shader/x-vertex" >#version 300 es
+		in vec3 vPosition;
+		in vec4 vColor;
+		
+		uniform mat4 uViewMatrix;
+		uniform mat4 uProjectionMatrix;
+
+		out lowp vec4 fColor;
+			
+		void main(void) {
+			gl_Position = uProjectionMatrix * uViewMatrix * vec4(vPosition, 1.0);
+			fColor = vColor;
+		}
+	</script>
+	
+	<script id="fragment-shader" type="x-shader/x-fragment">#version 300 es
+		in lowp vec4 fColor;
+		out lowp vec4 outColor;
+		
+		void main(void) {
+			outColor = fColor;
+		}
+	</script>
+	
+	<script type="text/javascript" src="cube.js"></script>
+	<script type="text/javascript" src="createCubeData.js"></script>
+	<script type="text/javascript" src="../utils.js"></script>
+	<script type="text/javascript" src="../gl-matrix.js"></script>
+
+	<body>
+
+		<canvas id="gl-canvas" width="600" height="600"></canvas>
+		<div style="display: flex">
+			<div class="container">
+				<strong>Translate:</strong>
+				<div style="display: flex">
+					x: <input id="translate_x" type="number" value="0">
+					y: <input id="translate_y" type="number" value="0">
+					z: <input id="translate_z" type="number" value="0">
+				</div>
+				<strong>Rotate:</strong>
+				<div style="display: flex">
+					x: <input id="rotate_x" type="number" value="0">
+					y: <input id="rotate_y" type="number" value="0">
+					z: <input id="rotate_z" type="number" value="0">
+				</div>
+				<input id="slide_rotate" type="range" min="0" max="360" step="1" value="0">
+				<strong>Scale:</strong>
+				<div style="display: flex">
+					x: <input id="scale_x" type="number" value="1">
+					y: <input id="scale_y" type="number" value="1">
+					z: <input id="scale_z" type="number" value="1">
+				</div>
+			</div>
+			<div class="container">
+				<strong>Orthographic projection:</strong>
+				<div>
+					left: <input id="slide_left" type="range" min="-100" max="100" step="1" value="-1">
+					right: <input id="slide_right" type="range" min="-100" max="100" step="1" value="1">
+					bottom: <input id="slide_bottom" type="range" min="-100" max="100" step="1" value="-1">
+					top: <input id="slide_top" type="range" min="-100" max="100" step="1" value="1">
+					near: <input id="slide_near" type="range" min="-100" max="100" step="1" value="1">
+					far: <input id="slide_far" type="range" min="-100" max="100" step="1" value="-1">
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
