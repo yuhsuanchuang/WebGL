@@ -1,4 +1,4 @@
-# WebGL
+# WebGL Notes
 
 WebGL enables web content to use an API based on **OpenGL ES** (version 3.0 for WebGL2) to perform 2D and 3D rendering in an HTML canvas in browsers that support it without the use of plug-ins. 
 
