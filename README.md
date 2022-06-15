@@ -1,2 +1,2 @@
 # WebGL
-Simple WebGL projecy
+Simple WebGL project
