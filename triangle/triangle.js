@@ -23,6 +23,7 @@ function main() {
   // Get WebGL rendering context
   let gl = canvas.getContext('webgl2');
 
+  // specifies the affine transformation of x and y from normalized device coordinates to window coordinates.
   gl.viewport(0, 0, canvas.width, canvas.height);
 
   // Get vertex shader src
@@ -73,9 +74,8 @@ function main() {
 
   // View Matrix
   const view = mat4.create();
-  mat4.rotate(view, view, toRadians(45), [0, 0, 1]); // viewMatrix, destinate, radiansm, axis
+  mat4.rotate(view, view, toRadians(45), [0, 0, 1]); // viewMatrix, destinate, radians, axis
   const uViewMatrix = gl.getUniformLocation(program, 'uViewMatrix');
-  console.log('view = ', view);
   gl.uniformMatrix4fv(uViewMatrix, false, view);
 
   // Projection Matrix
@@ -83,7 +83,6 @@ function main() {
   mat4.ortho(projection, -1, 1, -1, 1, -10, 10); // projection, left, right, bottom, top, near, far
 
   const uProjectionMatrix = gl.getUniformLocation(program, 'uProjectionMatrix');
-  console.log('projection = ', projection);
   gl.uniformMatrix4fv(uProjectionMatrix, false, projection);
 
   // Draw Triangle

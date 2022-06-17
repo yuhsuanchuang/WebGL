@@ -1,0 +1,64 @@
+<html>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/96/three.min.js"></script>
+	<script id="vertex-shader" type="x-shader/x-vertex" >#version 300 es
+		in vec4 color;
+		// in vec4 borderColor;
+		// in float borderThickness;
+		// in float radius;
+
+		out lowp vec4 vColor;
+		out lowp vec4 vBorderColor;
+		out lowp float vBorderThickness;
+		out lowp float vRadius;
+
+		void main(void) {
+			gl_PointSize = 100.0;
+			vec4 modelViewPosition = modelViewMatrix * vec4(position, 1.0);
+      		gl_Position = projectionMatrix * modelViewPosition;
+			vColor = color;
+			vBorderColor = vec4(0.0, 0.0, 0.0, 1.0);
+			vBorderThickness = 1.0;
+			vRadius = 60.0;
+		}
+	</script>
+	<script id="fragment-shader" type="x-shader/x-fragment">#version 300 es
+		precision mediump float;
+		in lowp vec4 vColor;
+		in lowp vec4 vBorderColor;
+		in lowp float vBorderThickness;
+		in lowp float vRadius;
+		out lowp vec4 outColor;
+
+		const vec2 center = vec2(0.5, 0.5);
+
+		vec4 getColor() {
+			float centerDistance = length(gl_PointCoord - center);
+			if (centerDistance > 0.5) {
+				discard;
+			}
+			//return vColor;
+			
+			// Radius of the interior circle
+			float interiorRadius = (1.0 - vBorderThickness / vRadius) * 0.5;
+			// Ratio of pixel size to point size
+			float pixelSize = fwidth(centerDistance);
+			
+		    float borderAlpha = 1.0 - smoothstep(0.5 - pixelSize, 0.5, centerDistance);
+			vec4 borderColor = vec4(vBorderColor.rgb, borderAlpha * vBorderColor.a);
+			float interiorPercentage = smoothstep(interiorRadius - pixelSize, interiorRadius, centerDistance);
+			vec4 interiorColor = mix(vColor, vBorderColor, interiorPercentage);
+			//return vec4(interiorPercentage, borderAlpha, 0, 1);
+			return mix(interiorColor, borderColor, step(interiorRadius, centerDistance));
+		}
+		
+		void main(void) {
+			outColor = getColor();
+		}
+	</script>
+	<body>
+		<canvas id="gl-canvas"></canvas>
+
+		<script type="text/javascript" src="circle.js"></script>
+	</body>
+	
+</html>
