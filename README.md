@@ -46,11 +46,11 @@ void main(void) {
 
 ```
 #version 300 es
-precision mediump float;
+precision lowp float;
 
-in lowp vec4 vColor;
+in vec4 vColor;
 
-out lowp vec4 outColor;
+out vec4 outColor;
 
 void main(void) {
     outColor = vColor;
