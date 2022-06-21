@@ -132,11 +132,14 @@ void main(void) {
 ### Object Transformation - Model View Projection Matrices (MVP)
 A transformation pipeline converts each drawing vertex into the clip space (-1 to 1 on every axis). 
 - **Model matrix**: Defines **translation**, **rotation**, and **scale** of the model vertices.
-- **View matrix**: Defines position and orientation of the "camera".
    ```js
    mat4.translate(receive_matrix, matrix_to_translate, translate_vector);
    mat4.rotate(receive_matrix, matrix_to_rotate, raduan, axis);
    mat4.scale(receive_matrix, matrix_to_scale, scale_vector);
+   ```
+- **View matrix**: Defines position and orientation of the "camera".
+   ```js
+   mat4.lookAt(receive_matrix, eye, center, up);
    ```
 - **Projection matrix**: Maps what the "camera" sees to the clip space.
     - [Perspective projection](http://learnwebgl.brown37.net/08_projections/projections_perspective.html): 
@@ -149,3 +152,5 @@ A transformation pipeline converts each drawing vertex into the clip space (-1 t
     ```
 
 (Library [gl-matrix](https://glmatrix.net/): A Javascript Matrix and Vector library for High Performance WebGL apps)
+
+Matrices multiplication
