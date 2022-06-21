@@ -18,7 +18,7 @@ There are two shader functions run when drawing WebGL content:
 
 ![image](https://user-images.githubusercontent.com/21137152/173796300-58425551-9748-4142-bf06-6259d2c522cc.png)
 
- ([Precision: lowp, medium, highp](https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/WebGL_best_practices#essl300_minimum_requirements_webgl_2))
+ ([Precision: lowp, medium, highp](https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/WebGL_best_practices#be_precise_with_glsl_precision_annotations))
 
 
 <details><summary>Vertex shader example</summary>
