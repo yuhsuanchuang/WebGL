@@ -72,11 +72,17 @@ function main() {
   gl.vertexAttribPointer(vPositionLoc, 3, gl.FLOAT, false, 0, 0);
   gl.enableVertexAttribArray(vPositionLoc);
 
+  // Model Matrix
+  let model = mat4.create();
+  mat4.scale(model, model, [0.5, 0.5, 0.5]);
+  mat4.translate(model, model, [1, 0, 0]);
+  mat4.rotate(model, model, toRadians(180), [0, 0, 1]); // receiving matrix, matrix to rotate, radians, axis
+  const uModelMatrix = gl.getUniformLocation(program, 'uModelMatrix');
+  gl.uniformMatrix4fv(uModelMatrix, false, model);
+
   // View Matrix
   let view = mat4.create();
-  mat4.scale(view, view, [0.5, 0.5, 0.5]);
-  mat4.translate(view, view, [1, 0, 0]);
-  mat4.rotate(view, view, toRadians(45), [0, 0, 1]); // receiving matrix, matrix to rotate, radians, axis
+  mat4.lookAt(view, [0, 0, 0.5], [0, 0, 0], [0, 1, 0]);
   const uViewMatrix = gl.getUniformLocation(program, 'uViewMatrix');
   gl.uniformMatrix4fv(uViewMatrix, false, view);
 

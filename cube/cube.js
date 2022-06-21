@@ -65,7 +65,7 @@ function main() {
 
   gl.vertexAttribPointer(vPositionLoc, 3, gl.FLOAT, false, 3 * 4, 0);
 
-  //View Matrix
+  //Model View Matrix
   const view = mat4.create();
   mat4.translate(view, view, [translateX, translateY, translateZ]);
   mat4.rotate(view, view, toRadians(rotateRange), [rotateX, rotateY, rotateZ]);

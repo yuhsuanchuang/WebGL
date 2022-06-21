@@ -10,13 +10,14 @@
 			in vec3 vPosition;
 			in vec4 vColor;
 			
+			uniform mat4 uModelMatrix;
 			uniform mat4 uViewMatrix;
 			uniform mat4 uProjectionMatrix;
 
 			out lowp vec4 fColor;
 				
 			void main(void) {
-				gl_Position = uProjectionMatrix * uViewMatrix * vec4(vPosition, 1.0);
+				gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(vPosition, 1.0);
 				fColor = vColor;
 			}
 		</script>
