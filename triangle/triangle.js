@@ -73,15 +73,16 @@ function main() {
   gl.enableVertexAttribArray(vPositionLoc);
 
   // View Matrix
-  const view = mat4.create();
-  mat4.rotate(view, view, toRadians(45), [0, 0, 1]); // viewMatrix, destinate, radians, axis
+  let view = mat4.create();
+  mat4.scale(view, view, [0.5, 0.5, 0.5]);
+  mat4.translate(view, view, [1, 0, 0]);
+  mat4.rotate(view, view, toRadians(45), [0, 0, 1]); // receiving matrix, matrix to rotate, radians, axis
   const uViewMatrix = gl.getUniformLocation(program, 'uViewMatrix');
   gl.uniformMatrix4fv(uViewMatrix, false, view);
 
   // Projection Matrix
   const projection = mat4.create();
-  mat4.ortho(projection, -1, 1, -1, 1, -10, 10); // projection, left, right, bottom, top, near, far
-
+  mat4.ortho(projection, -1, 1, -1, 1, -1, 1); // projection, left, right, bottom, top, near, far
   const uProjectionMatrix = gl.getUniformLocation(program, 'uProjectionMatrix');
   gl.uniformMatrix4fv(uProjectionMatrix, false, projection);
 

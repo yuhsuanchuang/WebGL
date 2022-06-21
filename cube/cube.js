@@ -138,27 +138,27 @@ function main() {
   };
 
   document.getElementById('slide_left').onchange = function () {
-    orth_left = parseInt(this.value);
+    orth_left = parseFloat(this.value);
     main();
   };
   document.getElementById('slide_right').onchange = function () {
-    orth_right = parseInt(this.value);
+    orth_right = parseFloat(this.value);
     main();
   };
   document.getElementById('slide_bottom').onchange = function () {
-    orth_bottom = parseInt(this.value);
+    orth_bottom = parseFloat(this.value);
     main();
   };
   document.getElementById('slide_top').onchange = function () {
-    orth_top = parseInt(this.value);
+    orth_top = parseFloat(this.value);
     main();
   };
   document.getElementById('slide_near').onchange = function () {
-    orth_near = parseInt(this.value);
+    orth_near = parseFloat(this.value);
     main();
   };
   document.getElementById('slide_far').onchange = function () {
-    orth_far = parseInt(this.value);
+    orth_far = parseFloat(this.value);
     main();
   };
 }
