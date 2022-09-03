@@ -44,10 +44,10 @@ function createCube() {
     positionData[108 + 3 * i] = axes[i].x;
     positionData[108 + 3 * i + 1] = axes[i].y;
     positionData[108 + 3 * i + 2] = axes[i].z;
-    colorData[144 + 4 * i] = vertexColors[0].r;
-    colorData[144 + 4 * i + 1] = vertexColors[0].g;
-    colorData[144 + 4 * i + 2] = vertexColors[0].b;
-    colorData[144 + 4 * i + 3] = vertexColors[0].a;
+    colorData[144 + 4 * i] = vertexColors[7].r;
+    colorData[144 + 4 * i + 1] = vertexColors[7].g;
+    colorData[144 + 4 * i + 2] = vertexColors[7].b;
+    colorData[144 + 4 * i + 3] = vertexColors[7].a;
   }
 }
 

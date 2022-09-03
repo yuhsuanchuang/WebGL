@@ -1,24 +1,40 @@
 let positionData = [];
 let colorData = [];
-let rotateX = 0,
-  rotateY = 0,
-  rotateZ = 0,
-  rotateRange = 0;
 
-let translateX = 0,
-  translateY = 0,
-  translateZ = 0;
+let rotation = {
+  x: 1,
+  y: 0,
+  z: 1,
+  degree: 20,
+};
 
-let scaleX = 1,
-  scaleY = 1,
-  scaleZ = 1;
+let translation = {
+  x: 0,
+  y: 0,
+  z: 0,
+};
 
-let orth_left = -1,
-  orth_right = 1,
-  orth_bottom = -1,
-  orth_top = 1,
-  orth_near = 1,
-  orth_far = -1;
+let scaling = {
+  x: 0.5,
+  y: 0.5,
+  z: 0.5,
+};
+
+let orthographic = {
+  left: -1,
+  right: 1,
+  bottom: -1,
+  top: 1,
+  near: 1,
+  far: -1,
+};
+
+let perspective = {
+  fov: 30,
+  aspect: 1,
+  near: 4,
+  far: -10,
+};
 
 function main() {
   const canvas = document.querySelector('#gl-canvas');
@@ -65,25 +81,64 @@ function main() {
 
   gl.vertexAttribPointer(vPositionLoc, 3, gl.FLOAT, false, 3 * 4, 0);
 
+  addGUI();
+  render(program, gl);
+}
+
+function addGUI() {
+  let gui = new dat.GUI();
+
+  const translate = gui.addFolder('Translate');
+  translate.add(translation, 'x').min(-10).max(10).step(1);
+  translate.add(translation, 'y').min(-10).max(10).step(1);
+  translate.add(translation, 'z').min(-10).max(10).step(1);
+
+  const rotate = gui.addFolder('Rotate');
+  rotate.add(rotation, 'x').min(-10).max(10).step(1);
+  rotate.add(rotation, 'y').min(-10).max(10).step(1);
+  rotate.add(rotation, 'z').min(-10).max(10).step(1);
+  rotate.add(rotation, 'degree').min(0).max(360).step(1);
+
+  const scale = gui.addFolder('Scale');
+  scale.add(scaling, 'x').min(0).max(10).step(0.1);
+  scale.add(scaling, 'y').min(0).max(10).step(0.1);
+  scale.add(scaling, 'z').min(0).max(10).step(0.1);
+
+  const ortho = gui.addFolder('Orthographic Projection');
+  ortho.add(orthographic, 'left').min(-10).max(10).step(1);
+  ortho.add(orthographic, 'right').min(-10).max(10).step(1);
+  ortho.add(orthographic, 'bottom').min(-10).max(10).step(1);
+  ortho.add(orthographic, 'top').min(-10).max(10).step(1);
+  ortho.add(orthographic, 'near').min(-10).max(10).step(1);
+  ortho.add(orthographic, 'far').min(-10).max(10).step(1);
+
+  const perspect = gui.addFolder('Perspective Projection');
+  perspect.add(perspective, 'fov').min(0).max(180).step(1);
+  perspect.add(perspective, 'aspect').min(-10).max(10).step(1);
+  perspect.add(perspective, 'near').min(-10).max(10).step(1);
+  perspect.add(perspective, 'far').min(-10).max(10).step(1);
+}
+
+function render(program, gl) {
   //Model View Matrix
   const view = mat4.create();
-  mat4.translate(view, view, [translateX, translateY, translateZ]);
-  mat4.rotate(view, view, toRadians(rotateRange), [rotateX, rotateY, rotateZ]);
-  mat4.scale(view, view, [scaleX, scaleY, scaleZ]);
+  mat4.translate(view, view, [translation.x, translation.y, translation.z]);
+  mat4.rotate(view, view, toRadians(rotation.degree), [
+    rotation.x,
+    rotation.y,
+    rotation.z,
+  ]);
+  mat4.scale(view, view, [scaling.x, scaling.y, scaling.z]);
   const uViewMatrix = gl.getUniformLocation(program, 'uViewMatrix');
   gl.uniformMatrix4fv(uViewMatrix, false, view);
 
   // Projection Matrix
   const projection = mat4.create();
-  mat4.ortho(
-    projection,
-    orth_left,
-    orth_right,
-    orth_bottom,
-    orth_top,
-    orth_near,
-    orth_far
-  ); // projection, left, right, bottom, top, near, far
+  // const { left, right, bottom, top, near, far } = orthographic;
+  const { fov, aspect, near, far } = perspective;
+  mat4.perspective(projection, toRadians(fov), aspect, near, far);
+  // mat4.ortho(projection, left, right, bottom, top, near, far); // projection, left, right, bottom, top, near, far
+
   const uProjectionMatrix = gl.getUniformLocation(program, 'uProjectionMatrix');
   gl.uniformMatrix4fv(uProjectionMatrix, false, projection);
 
@@ -93,74 +148,7 @@ function main() {
   // Draw axis
   gl.drawArrays(gl.LINE_LOOP, 36, 6);
 
-  // event listener
-  document.getElementById('translate_x').onchange = function () {
-    translateX = this.value;
-    main();
-  };
-  document.getElementById('translate_y').onchange = function () {
-    translateY = this.value;
-    main();
-  };
-  document.getElementById('translate_z').onchange = function () {
-    translateZ = this.value;
-    main();
-  };
-
-  document.getElementById('slide_rotate').onchange = function () {
-    rotateRange = parseInt(this.value);
-    main();
-  };
-  document.getElementById('rotate_x').onchange = function () {
-    rotateX = this.value;
-    main();
-  };
-  document.getElementById('rotate_y').onchange = function () {
-    rotateY = this.value;
-    main();
-  };
-  document.getElementById('rotate_z').onchange = function () {
-    rotateZ = this.value;
-    main();
-  };
-
-  document.getElementById('scale_x').onchange = function () {
-    scaleX = this.value;
-    main();
-  };
-  document.getElementById('scale_y').onchange = function () {
-    scaleY = this.value;
-    main();
-  };
-  document.getElementById('scale_z').onchange = function () {
-    scaleZ = this.value;
-    main();
-  };
-
-  document.getElementById('slide_left').onchange = function () {
-    orth_left = parseFloat(this.value);
-    main();
-  };
-  document.getElementById('slide_right').onchange = function () {
-    orth_right = parseFloat(this.value);
-    main();
-  };
-  document.getElementById('slide_bottom').onchange = function () {
-    orth_bottom = parseFloat(this.value);
-    main();
-  };
-  document.getElementById('slide_top').onchange = function () {
-    orth_top = parseFloat(this.value);
-    main();
-  };
-  document.getElementById('slide_near').onchange = function () {
-    orth_near = parseFloat(this.value);
-    main();
-  };
-  document.getElementById('slide_far').onchange = function () {
-    orth_far = parseFloat(this.value);
-    main();
-  };
+  requestAnimationFrame(() => render(program, gl));
 }
 
 window.onload = main;

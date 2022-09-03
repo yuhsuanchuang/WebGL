@@ -11,10 +11,6 @@ const vertices = [
     position: { x: 0.5, y: 0, z: 0 },
     color: { r: 0, g: 0, b: 1, a: 1 },
   },
-  {
-    position: { x: 0.5, y: 0.5, z: 0.0 },
-    color: { r: 0, g: 1, b: 1, a: 1 },
-  },
 ];
 
 function main() {
@@ -74,15 +70,13 @@ function main() {
 
   // Model Matrix
   let model = mat4.create();
-  mat4.scale(model, model, [0.5, 0.5, 0.5]);
-  mat4.translate(model, model, [1, 0, 0]);
-  mat4.rotate(model, model, toRadians(180), [0, 0, 1]); // receiving matrix, matrix to rotate, radians, axis
+  // translate, rotate, scale...
   const uModelMatrix = gl.getUniformLocation(program, 'uModelMatrix');
   gl.uniformMatrix4fv(uModelMatrix, false, model);
 
   // View Matrix
   let view = mat4.create();
-  mat4.lookAt(view, [0, 0, 0.5], [0, 0, 0], [0, 1, 0]);
+  mat4.lookAt(view, [0, 0, 1], [0, 0, 0], [0, 1, 0]); // eye, center, up
   const uViewMatrix = gl.getUniformLocation(program, 'uViewMatrix');
   gl.uniformMatrix4fv(uViewMatrix, false, view);
 
@@ -94,33 +88,6 @@ function main() {
 
   // Draw Triangle
   gl.drawArrays(gl.TRIANGLES, 0, 3);
-
-  ///////////////////////////////////////
-  // Draw Square
-  // create index buffer
-  /*
-  const indexBuffer = gl.createBuffer();
-
-  // make this buffer the current 'ELEMENT_ARRAY_BUFFER'
-  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-
-  // Fill the current element array buffer with data
-  const indices = [
-    0,
-    1,
-    2, // first triangle
-    2,
-    1,
-    3, // second triangle
-  ];
-  gl.bufferData(
-    gl.ELEMENT_ARRAY_BUFFER,
-    new Uint16Array(indices),
-    gl.STATIC_DRAW
-  );
-
-  gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
-  */
 }
 
 window.onload = main;

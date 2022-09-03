@@ -62,15 +62,49 @@ void main(void) {
 
 ### Create a simple WebGL program
 1. Create a HTML canvas element
-2. Get WebGL rendering context and create a WebGL program
+    ```html
+    <canvas id="gl-canvas" width="800" height="800"></canvas>
+    ```
+2. Define vertex shader and fragment shader
+    ```html
+    <canvas id="gl-canvas" width="800" height="800"></canvas>
+	<script id="vertex-shader" type="x-shader/x-vertex" >#version 300 es
+		in vec3 vPosition;
+		in vec4 vColor;
+		
+		uniform mat4 uModelMatrix;
+		uniform mat4 uViewMatrix;
+		uniform mat4 uProjectionMatrix;
+
+		out lowp vec4 fColor;
+			
+		void main(void) {
+			gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(vPosition, 1.0);
+			fColor = vColor;
+		}
+	</script>
+	
+	<script id="fragment-shader" type="x-shader/x-fragment">#version 300 es
+		in lowp vec4 fColor;
+		out lowp vec4 outColor;
+		
+		void main(void) {
+			outColor = fColor;
+		}
+	</script>
+    ```
+3. Get WebGL rendering context and set viewport 
     ```js
     const gl = canvas.getContext('webgl2');
-    const program = gl.createProgram();
+    gl.viewport(0, 0, canvas.width, canvas.height);
     ```
-3. Link program with compiled shaders
+4. Create a WebGL program and link program with compiled shaders
     ```js
+    // Create program
+    const program = gl.createProgram();
+    
     // Create shader
-    const shader = gl.createShader(shaderType);
+    const shader = gl.createShader(shaderType); // (gl.VERTEX_SHADER, gl.FRAGMENT_SHADER)
     
     // Set GLSL source
     gl.shaderSource(shader, source);
@@ -84,7 +118,7 @@ void main(void) {
     // Link program
     gl.linkProgram(program);
     ```
-4. Bind attributes with data buffers and set uniforms
+5. Bind attributes with data buffers and set uniforms
     ```js
     // Get attribute location (index) in the program
     const vPositionLoc = gl.getAttribLocation(program, 'vPosition');
@@ -108,7 +142,8 @@ void main(void) {
     // Set a 4-component floats matrix to the target uniform
     gl.uniformMatrix4fv(uViewMatrix, false, matrix); // uniform location, transpose, value
     ```
-5. Draw (gl.drawArrays, gl.drawElements ...)
+6. Draw (gl.drawArrays, gl.drawElements ...)
+    
     Draw a triangle
     ```js
     gl.drawArrays(gl.TRIANGLES, 0, 3);
@@ -134,7 +169,7 @@ A transformation pipeline converts each drawing vertex into the clip space (-1 t
 - **Model matrix**: Defines **translation**, **rotation**, and **scale** of the model vertices.
    ```js
    mat4.translate(receive_matrix, matrix_to_translate, translate_vector);
-   mat4.rotate(receive_matrix, matrix_to_rotate, raduan, axis);
+   mat4.rotate(receive_matrix, matrix_to_rotate, radian, axis);
    mat4.scale(receive_matrix, matrix_to_scale, scale_vector);
    ```
 - **View matrix**: Defines position and orientation of the "camera".
@@ -154,3 +189,4 @@ A transformation pipeline converts each drawing vertex into the clip space (-1 t
 (Library [gl-matrix](https://glmatrix.net/): A Javascript Matrix and Vector library for High Performance WebGL apps)
 
 Matrices multiplication
+    VertexTranform = [ProjectionMatrix] * [ViewMatrix] * [ModelMatrix]
