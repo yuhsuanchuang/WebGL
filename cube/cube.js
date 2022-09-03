@@ -112,11 +112,11 @@ function addGUI() {
   ortho.add(orthographic, 'near').min(-10).max(10).step(1);
   ortho.add(orthographic, 'far').min(-10).max(10).step(1);
 
-  const perspect = gui.addFolder('Perspective Projection');
-  perspect.add(perspective, 'fov').min(0).max(180).step(1);
-  perspect.add(perspective, 'aspect').min(-10).max(10).step(1);
-  perspect.add(perspective, 'near').min(-10).max(10).step(1);
-  perspect.add(perspective, 'far').min(-10).max(10).step(1);
+  // const perspect = gui.addFolder('Perspective Projection');
+  // perspect.add(perspective, 'fov').min(0).max(180).step(1);
+  // perspect.add(perspective, 'aspect').min(-10).max(10).step(1);
+  // perspect.add(perspective, 'near').min(-10).max(10).step(1);
+  // perspect.add(perspective, 'far').min(-10).max(10).step(1);
 }
 
 function render(program, gl) {
@@ -134,10 +134,12 @@ function render(program, gl) {
 
   // Projection Matrix
   const projection = mat4.create();
-  // const { left, right, bottom, top, near, far } = orthographic;
-  const { fov, aspect, near, far } = perspective;
-  mat4.perspective(projection, toRadians(fov), aspect, near, far);
-  // mat4.ortho(projection, left, right, bottom, top, near, far); // projection, left, right, bottom, top, near, far
+  const { left, right, bottom, top, near, far } = orthographic;
+  mat4.ortho(projection, left, right, bottom, top, near, far); // projection, left, right, bottom, top, near, far
+
+  // Perspective projection
+  // const { fov, aspect, near, far } = perspective;
+  // mat4.perspective(projection, toRadians(fov), aspect, near, far);
 
   const uProjectionMatrix = gl.getUniformLocation(program, 'uProjectionMatrix');
   gl.uniformMatrix4fv(uProjectionMatrix, false, projection);
