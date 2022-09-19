@@ -142,6 +142,7 @@ void main(void) {
     // Set a 4-component floats matrix to the target uniform
     gl.uniformMatrix4fv(uViewMatrix, false, matrix); // uniform location, transpose, value
     ```
+    ![687474703a2f2f67746d7330322e616c6963646e2e636f6d2f7470732f69322f54317771304f46426861585858394d3162562d3833312d3537362e706e67](https://user-images.githubusercontent.com/21137152/190946065-c316dc35-52a8-452c-a65d-bbeeae0839a1.png)
 6. Draw (gl.drawArrays, gl.drawElements ...)
     
     Draw a triangle
