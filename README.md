@@ -67,7 +67,6 @@ void main(void) {
     ```
 2. Define vertex shader and fragment shader
     ```html
-    <canvas id="gl-canvas" width="800" height="800"></canvas>
 	<script id="vertex-shader" type="x-shader/x-vertex" >#version 300 es
 		in vec3 vPosition;
 		in vec4 vColor;
