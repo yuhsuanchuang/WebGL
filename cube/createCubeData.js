@@ -20,9 +20,19 @@ const vertexColors = [
   { r: 1.0, g: 1.0, b: 1.0, a: 1 }, // white
 ];
 
+const textureCord = [
+  { x: 0, y: 0 }, // vertice 1
+  { x: 1, y: 0 }, // 0
+  { x: 1, y: 1 }, // 3
+  { x: 0, y: 0 }, // 1
+  { x: 1, y: 1 }, // 3
+  { x: 0, y: 1 }, // 2
+]; // https://ithelp.ithome.com.tw/articles/10260664 learn how to map texture coordinates
+
 function createCube() {
   positionData = new Float32Array(42 * 3);
   colorData = new Float32Array(42 * 4);
+  textureCordData = new Float32Array(42 * 2);
 
   quad(1, 0, 3, 2);
   quad(2, 3, 7, 6);
@@ -48,6 +58,8 @@ function createCube() {
     colorData[144 + 4 * i + 1] = vertexColors[7].g;
     colorData[144 + 4 * i + 2] = vertexColors[7].b;
     colorData[144 + 4 * i + 3] = vertexColors[7].a;
+    textureCordData[72 + 2 * i] = 0;
+    textureCordData[72 + 2 * i + 1] = 0;
   }
 }
 
@@ -63,5 +75,7 @@ function quad(a, b, c, d) {
     colorData[24 * (a - 1) + 4 * i + 1] = vertexColors[a].g;
     colorData[24 * (a - 1) + 4 * i + 2] = vertexColors[a].b;
     colorData[24 * (a - 1) + 4 * i + 3] = vertexColors[a].a;
+    textureCordData[12 * (a - 1) + 2 * i] = textureCord[i].x;
+    textureCordData[12 * (a - 1) + 2 * i + 1] = textureCord[i].y;
   }
 }

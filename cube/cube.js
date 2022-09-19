@@ -1,40 +1,41 @@
-let positionData = [];
-let colorData = [];
+let positionData = [],
+  colorData = [],
+  textureCordData = [];
 
-let rotation = {
+const rotation = {
   x: 1,
   y: 0,
   z: 1,
   degree: 20,
 };
 
-let translation = {
+const translation = {
   x: 0,
   y: 0,
   z: 0,
 };
 
-let scaling = {
+const scaling = {
   x: 0.5,
   y: 0.5,
   z: 0.5,
 };
 
-let orthographic = {
+const orthographic = {
   left: -1,
   right: 1,
   bottom: -1,
   top: 1,
-  near: 1,
-  far: -1,
+  near: -1,
+  far: 1,
 };
 
-let perspective = {
-  fov: 30,
-  aspect: 1,
-  near: 4,
-  far: -10,
-};
+// const perspective = {
+//   fov: 30,
+//   aspect: 1,
+//   near: 4,
+//   far: -10,
+// };
 
 function main() {
   const canvas = document.querySelector('#gl-canvas');
@@ -81,8 +82,43 @@ function main() {
 
   gl.vertexAttribPointer(vPositionLoc, 3, gl.FLOAT, false, 3 * 4, 0);
 
+  bindTextureBuffer(gl, program);
   addGUI();
   render(program, gl);
+}
+
+async function bindTextureBuffer(gl, program) {
+  const image = await loadImage(
+    'https://assets.juksy.com/files/articles/102073/800x_100_w-61a617165c7e8.jpg'
+  );
+  var texcoordAttributeLocation = gl.getAttribLocation(program, 'a_texcoord');
+  // create the texcoord buffer, make it the current ARRAY_BUFFER
+  // and copy in the texcoord values
+  var texcoordBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, texcoordBuffer);
+
+  // Turn on the attribute
+  gl.enableVertexAttribArray(texcoordAttributeLocation);
+
+  // Tell the attribute how to get data out of texcoordBuffer (ARRAY_BUFFER)
+  gl.vertexAttribPointer(
+    texcoordAttributeLocation,
+    2, // size: 2 components per iteration
+    gl.FLOAT, // type: the data is 32bit floating point values
+    false, // normalize: convert from 0-255 to 0.0-1.0
+    0, // stride: 0 = move forward size * sizeof(type) each iteration to get the next texcoord
+    0 // offset: start at the beginning of the buffer
+  );
+
+  gl.bufferData(gl.ARRAY_BUFFER, textureCordData, gl.STATIC_DRAW);
+
+  // Create a texture.
+  var texture = gl.createTexture();
+
+  // Now that the image has loaded make copy it to the texture.
+  gl.bindTexture(gl.TEXTURE_2D, texture);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+  gl.generateMipmap(gl.TEXTURE_2D);
 }
 
 function addGUI() {
@@ -120,15 +156,21 @@ function addGUI() {
 }
 
 function render(program, gl) {
-  //Model View Matrix
-  const view = mat4.create();
-  mat4.translate(view, view, [translation.x, translation.y, translation.z]);
-  mat4.rotate(view, view, toRadians(rotation.degree), [
+  // Model Matrix
+  const model = mat4.create();
+  mat4.translate(model, model, [translation.x, translation.y, translation.z]);
+  mat4.rotate(model, model, toRadians(rotation.degree), [
     rotation.x,
     rotation.y,
     rotation.z,
   ]);
-  mat4.scale(view, view, [scaling.x, scaling.y, scaling.z]);
+  mat4.scale(model, model, [scaling.x, scaling.y, scaling.z]);
+  const uModelMatrix = gl.getUniformLocation(program, 'uModelMatrix');
+  gl.uniformMatrix4fv(uModelMatrix, false, model);
+
+  // View Matrix
+  const view = mat4.create();
+  mat4.lookAt(model, [0, 0, 1], [0, 0, 0], [0, 1, 0]); // eye, center, up
   const uViewMatrix = gl.getUniformLocation(program, 'uViewMatrix');
   gl.uniformMatrix4fv(uViewMatrix, false, view);
 

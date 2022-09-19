@@ -36,7 +36,7 @@ function main() {
   });
   gl.useProgram(program);
 
-  // Create color buffer, associate vColor attribute with color buffer
+  // Create color buffer, associate vColor attribute with color buffer [r0, g0, b0, a0, r1, g1, b1, a1...]
   let colorData = new Float32Array(vertices.length * 4);
   vertices.forEach((vertex, i) => {
     colorData[4 * i] = vertex.color.r;
@@ -45,46 +45,54 @@ function main() {
     colorData[4 * i + 3] = vertex.color.a;
   });
 
+  const vColorLoc = gl.getAttribLocation(program, 'vColor');
+  gl.enableVertexAttribArray(vColorLoc);
+
   const colorBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
   gl.bufferData(gl.ARRAY_BUFFER, colorData, gl.STATIC_DRAW);
 
-  const vColorLoc = gl.getAttribLocation(program, 'vColor');
   gl.vertexAttribPointer(vColorLoc, 4, gl.FLOAT, false, 0, 0);
-  gl.enableVertexAttribArray(vColorLoc);
 
-  // Create position buffer, associate vPosition attribute with position buffer
+  // Create position buffer, associate vPosition attribute with position buffer [x0, y0, z0, x1, y1, z1...]
   let positionData = new Float32Array(vertices.length * 3);
   vertices.forEach((vertex, i) => {
     positionData[3 * i] = vertex.position.x;
     positionData[3 * i + 1] = vertex.position.y;
     positionData[3 * i + 2] = vertex.position.z;
   });
+
+  const vPositionLoc = gl.getAttribLocation(program, 'vPosition');
+  gl.enableVertexAttribArray(vPositionLoc);
+
   const positionBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
   gl.bufferData(gl.ARRAY_BUFFER, positionData, gl.STATIC_DRAW);
 
-  const vPositionLoc = gl.getAttribLocation(program, 'vPosition');
   gl.vertexAttribPointer(vPositionLoc, 3, gl.FLOAT, false, 0, 0);
-  gl.enableVertexAttribArray(vPositionLoc);
 
-  // Model Matrix
+  // Model Matrix - translate, rotate, scale...
   let model = mat4.create();
-  // translate, rotate, scale...
-  const uModelMatrix = gl.getUniformLocation(program, 'uModelMatrix');
-  gl.uniformMatrix4fv(uModelMatrix, false, model);
+  // mat4.translate(receive_matrix, matrix_to_translate, translate_vector);
+  // mat4.rotate(receive_matrix, matrix_to_rotate, radian, axis);
+  // mat4.scale(receive_matrix, matrix_to_scale, scale_vector);
 
   // View Matrix
   let view = mat4.create();
   mat4.lookAt(view, [0, 0, 1], [0, 0, 0], [0, 1, 0]); // eye, center, up
-  const uViewMatrix = gl.getUniformLocation(program, 'uViewMatrix');
-  gl.uniformMatrix4fv(uViewMatrix, false, view);
 
   // Projection Matrix
-  const projection = mat4.create();
+  let projection = mat4.create();
   mat4.ortho(projection, -1, 1, -1, 1, -1, 1); // projection, left, right, bottom, top, near, far
-  const uProjectionMatrix = gl.getUniformLocation(program, 'uProjectionMatrix');
-  gl.uniformMatrix4fv(uProjectionMatrix, false, projection);
+
+  // mvpMatrix = projection * view * model
+  let mvpMatrix = mat4.create();
+  mat4.multiply(mvpMatrix, model, view);
+  mat4.multiply(mvpMatrix, mvpMatrix, projection);
+
+  // set uMVPMatrix uniform
+  const uMVPMatrix = gl.getUniformLocation(program, 'uMVPMatrix');
+  gl.uniformMatrix4fv(uMVPMatrix, false, mvpMatrix);
 
   // Draw Triangle
   gl.drawArrays(gl.TRIANGLES, 0, 3);

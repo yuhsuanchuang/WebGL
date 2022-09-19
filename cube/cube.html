@@ -13,25 +13,32 @@
 	<script id="vertex-shader" type="x-shader/x-vertex" >#version 300 es
 		in vec3 vPosition;
 		in vec4 vColor;
-		
+		in vec2 a_texcoord;
+
+		uniform mat4 uModelMatrix;
 		uniform mat4 uViewMatrix;
 		uniform mat4 uProjectionMatrix;
 
 		out lowp vec4 fColor;
-			
+		out vec2 v_texcoord;
+
 		void main(void) {
-			gl_PointSize = 10.0;
-			gl_Position = uProjectionMatrix * uViewMatrix * vec4(vPosition, 1.0);
+			gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(vPosition, 1.0);
 			fColor = vColor;
+			v_texcoord = a_texcoord;
 		}
 	</script>
 	
 	<script id="fragment-shader" type="x-shader/x-fragment">#version 300 es
 		in lowp vec4 fColor;
+		in lowp vec2 v_texcoord;
+
+		uniform sampler2D u_texture;
+
 		out lowp vec4 outColor;
 		
 		void main(void) {
-			outColor = fColor;
+			outColor = texture(u_texture, v_texcoord) * fColor;
 		}
 	</script>
 	

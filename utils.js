@@ -43,3 +43,20 @@ function createProgram({ gl, vertexShaderSrc, fragmentShaderSrc }) {
 function toRadians(degrees) {
   return (degrees * 3.1415) / 180;
 }
+
+async function loadImage(url) {
+  return new Promise((resolve) => {
+    const image = new Image();
+
+    // CROSS_ORIGIN
+    // https://webgl2fundamentals.org/webgl/lessons/webgl-cors-permission.html
+    if (new URL(url).host !== location.host) {
+      image.crossOrigin = '';
+    }
+
+    image.onload = function () {
+      resolve(image);
+    };
+    image.src = url;
+  });
+}

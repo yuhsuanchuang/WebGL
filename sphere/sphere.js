@@ -39,8 +39,9 @@ function main() {
 
   let geometry = new THREE.SphereGeometry(10, 50, 50);
   let material = new THREE.MeshPhongMaterial();
-  material.map = new THREE.ImageUtils.loadTexture('earth.jpeg');
-  material.bumpMap = new THREE.ImageUtils.loadTexture('bump.jpeg');
+
+  material.map = new THREE.TextureLoader().load('earth.jpeg');
+  material.bumpMap = new THREE.TextureLoader().load('bump.jpeg');
   material.bumpScale = 1;
 
   circle = new THREE.Mesh(geometry, material);
